@@ -1,0 +1,88 @@
+/*
+ * WiiChuckDemo -- 
+ *
+ * 2008 Tod E. Kurt, http://thingm.com/
+ *
+ */
+
+#include <Wire.h>
+#include "nunchuck_funcs.h"
+
+int loop_cnt=0;
+int motor_A=5;
+int motor_B=4;
+int motor_Speed=3;
+byte accy,zbut,cbut;
+int joyy,joyyZero,joyyApp=0;
+int ledPin = 13;
+
+
+void setup()
+{
+    
+    Serial.begin(19200);
+    nunchuck_setpowerpins();
+    nunchuck_init(); // send the initilization handshake
+    //Calibrate the joystick
+    
+   int joyyCali;
+    
+    delay(500);
+    for(int i=0;i<100;i++){
+      nunchuck_get_data();
+      joyyCali = joyyCali + nunchuck_joyy();
+      delay(10);
+    }
+    Serial.print("\tjoyyCali: "); Serial.println((byte)joyyCali,DEC);
+    joyyCali = joyyCali/100;
+    joyyZero = joyyCali-2; 
+    Serial.print("WiiChuckDemo ready\n");
+    pinMode(motor_A,OUTPUT);
+    pinMode(motor_B,OUTPUT);
+    
+}
+
+void loop()
+{
+    if( loop_cnt > 100 ) { // every 100 msecs get new data
+        loop_cnt = 0;
+
+        nunchuck_get_data();
+
+
+        zbut = nunchuck_zbutton();
+
+        joyy = nunchuck_joyy() - joyyZero;
+      
+         
+        Serial.print("\zbut: "); Serial.print((byte)zbut,DEC);
+
+        //Serial.print("\tjoyyZero: "); Serial.print((int)joyyZero,DEC);
+        Serial.print("\tjoyy: "); Serial.print((int)joyy,DEC);
+       
+        //Only drive if z-Button is pushed
+        if(zbut==1){
+         joyyApp = (4*joyy)/2; 
+        }
+        else {
+        joyyApp=0;
+        }
+
+        if(joyyApp>=0){
+                digitalWrite(motor_A,LOW); 
+                digitalWrite(motor_B,HIGH);
+                analogWrite(motor_Speed,joyyApp);
+        }
+        else {
+                  joyyApp=joyyApp*-1;
+                  digitalWrite(motor_A,HIGH); 
+                  digitalWrite(motor_B,LOW);
+                  analogWrite(motor_Speed,joyyApp);
+        }
+          
+        Serial.print("\tjoyyApp: "); Serial.println((int)joyyApp,DEC);
+        
+  }
+    loop_cnt++;
+    delay(1);
+}
