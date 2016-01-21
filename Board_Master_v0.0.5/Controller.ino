@@ -15,10 +15,10 @@ int controller_get_input()                    // get input from nunchuck joystic
         // Check if nunchuck input is activated
         zbut = nunchuck_zbutton();
         joyy = nunchuck_joyy();
-         #if Serial_or_OneSheeld_Terminal_Mode
-        COMPRINT("\tzbut: "); COMPRINT((byte)zbut,DEC);
-        COMPRINT("\tjoyy: "); COMPRINT((int)joyy,DEC); 
-        #else 
+        
+        #if !Serial_or_OneSheeld_Terminal_Mode
+        
+         
         COMPRINT("\tz: "); COMPRINT(zbut);
         COMPRINT("\tjy: "); COMPRINT(joyy);
         #endif 
@@ -43,7 +43,7 @@ int controller_get_input()                    // get input from nunchuck joystic
     COMPRINT("\tvalMapped: "); COMPRINT((int)valMapped,DEC);   // this value will be used 
     #else 
     COMPRINT("\tv: "); COMPRINT(val);
-    COMPRINTLN("\tvM: "); COMPRINT(valMapped);   // this value will be used  
+    COMPRINT("\tvM: "); COMPRINT(valMapped);   // this value will be used  
     #endif
         
         

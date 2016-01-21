@@ -120,7 +120,7 @@ void RPM_print()
   COMPRINT(RPM_Distance);
 
   COMPRINT("\t RPM_avg_velocity: ");
-  COMPRINTLN(RPM_avg_velocity);
+  COMPRINT(RPM_avg_velocity);
   }
 
 // Interrupt-Service-Routine

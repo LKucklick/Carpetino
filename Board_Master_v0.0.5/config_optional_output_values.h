@@ -4,8 +4,8 @@
    
 
 
-// Set bits in this variable to get different output
-uint8_t   measurement_output_flag=0;     
+//// Set bits in this variable to get different output
+//uint8_t   measurement_output_flag=0;     
 
 
 
@@ -14,8 +14,12 @@ int OOV_initialize()
 {
 
 
-#ifndef COMPRINT
+    #ifndef COMPRINT
+    
+    #ifndef Serial_or_OneSheeld_Terminal_Mode
     #define Serial_or_OneSheeld_Terminal_Mode true //True means Serial Mode is on, False means OneSheeld_Terminal_Mode is on
+    #endif
+    
     #if Serial_or_OneSheeld_Terminal_Mode
     /* Start Serial communication. */
     Serial.begin(115200);
@@ -30,13 +34,13 @@ int OOV_initialize()
     #define COMPRINTLN Terminal.println
     
     #endif  
-#endif
+    #endif
    
     COMPRINTLN("Optinal Output Values (OOV)_init\n");
   
 }
 
-
+#if Serial_or_OneSheeld_Terminal_Mode
 void serialEvent()
 {
   while(Serial.available())
@@ -61,6 +65,7 @@ void serialEvent()
        COMPRINT(measurement_output_flag);
        COMPRINT(",BIN:");
        COMPRINTLN(measurement_output_flag,BIN);
+       
     }
     if( ch == 'a' ) // is this an ascii a?
     {
@@ -91,6 +96,14 @@ void serialEvent()
        COMPRINT(measurement_output_flag);
        COMPRINT(",BIN:");
        COMPRINTLN(measurement_output_flag,BIN);
+       ch = Serial.read();
+       if( ch == 'L' ) // is this an ascii l?
+          {
+            bitSet(measurement_output_flag, 7);
+            COMPRINTLN("");
+            COMPRINTLN("-------Mode B long is ON----------");
+            COMPRINTLN("");
+          }
     }
     if( ch == 'b' ) // is this an ascii a?
     {
@@ -106,6 +119,14 @@ void serialEvent()
        COMPRINT(measurement_output_flag);
        COMPRINT(",BIN:");
        COMPRINTLN(measurement_output_flag,BIN);
+       ch = Serial.read();
+       if( ch == 'l' ) // is this an ascii l?
+          {
+            bitSet(measurement_output_flag, 7);
+            COMPRINTLN("");
+            COMPRINTLN("-------Mode B long is OFF----------");
+            COMPRINTLN("");
+          }
     }
     if( ch == 'N' ) // is this an ascii N?
     {
@@ -130,17 +151,20 @@ void serialEvent()
       
   }
 }
-
+#endif
 
 void print_chosen_output()
   {
   if( bitRead(measurement_output_flag, 0)) // is this an ascii A?
     {
-      COMPRINT("-------Mode A is ON----------");
+      
       RPM_print();
+      COMPRINTLN("-------Mode A is ON----------");
           }
  if( bitRead(measurement_output_flag, 1)) // is this an ascii A?
     {
+      
+      nunchuck_print_data();
       COMPRINTLN("-------Mode B is ON----------");
       
     }

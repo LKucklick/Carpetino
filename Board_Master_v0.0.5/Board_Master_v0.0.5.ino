@@ -1,3 +1,10 @@
+#ifndef Serial_or_OneSheeld_Terminal_Mode
+#define Serial_or_OneSheeld_Terminal_Mode true //True means Serial Mode is on, False means OneSheeld_Terminal_Mode is on
+#endif
+
+
+
+
 #define VERSION_NUMBER 5
 
 
@@ -15,6 +22,7 @@
 #include <Average.h>
 #include "config_Mega_Board.h"
 
+#if !Serial_or_OneSheeld_Terminal_Mode
 
 //OneSheeld settings, shields, config and libraries 
 #define CUSTOM_SETTINGS
@@ -24,18 +32,26 @@
 /* Include 1Sheeld library. */
 #include <OneSheeld.h>
 #include "config_OneSheeld.h"
-#include "nunchuck_funcs_I2C.h"
+
+#endif
+
+
 #include "config_RPM.h"
+
+#include "nunchuck_funcs_I2C.h"
 #include "config_optional_output_values.h"
+
 
 
 void setup()
 {
     int err = 0;
     serial_or_OneSheeld_initialize();
-    COMPRINT("Serial.begin: ");
+    COMPRINT("COM.begin: ");
     
+    #if !Serial_or_OneSheeld_Terminal_Mode
     OneSheeld_datalogger_initialize();
+    #endif
     
     nunchuck_initialize();              // in tab "Controller"
     RPM_initialize();
@@ -61,8 +77,10 @@ void loop()
     if( loop_cnt > 50 ) { // every 100 msecs get new data
        
         
-        
+        #if !Serial_or_OneSheeld_Terminal_Mode
         OneSheeld_log_data();
+        #endif
+        
         
         loop_cnt = 0;
 
@@ -70,7 +88,7 @@ void loop()
         
         RPM_get_data();
         
-          
+        print_chosen_output(); 
        }
           
         
@@ -78,6 +96,7 @@ void loop()
          
             
     myservo.write(valMapped);                  // stellt den Servo auf den Wert valMapped
+    
     loop_cnt++;
     delay(1);
     

@@ -154,6 +154,39 @@ int errorcount;
 
 Servo myservo;                       		// erzeugt ein Servo-Objekt
 
+// Set bits in this variable to get different output
+uint8_t   measurement_output_flag=0;
 
+#ifndef COMPRINT
+#if Serial_or_OneSheeld_Terminal_Mode
+int serial_or_OneSheeld_initialize()                    // Initialize the Serial Monitor Communication
+{
+    
+          
+    
+    /* Start Serial communication. */
+    Serial.begin(115200);
+    #define COMPRINT Serial.print
+    #define COMPRINTLN Serial.println
+    
+    
+    COMPRINTLN("");
+    COMPRINTLN("");
+    COMPRINT("Board_Master_v0.0.");
+    COMPRINTLN(VERSION_NUMBER);
+    COMPRINTLN("SerialMode.begin\n");
+    
+    
+    
+    
+
+    
+    
+}
+#else
+#undef COMPRINT
+#endif      
+    
+#endif
 
 #endif                                                        // ???

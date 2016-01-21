@@ -219,7 +219,11 @@ static void nunchuck_print_data()
         accel_z_axis += 2;
 
     #if Serial_or_OneSheeld_Terminal_Mode
-    
+
+    if (bitRead(measurement_output_flag, 1))
+    {   
+    if (bitRead(measurement_output_flag, 7))
+    {
     COMPRINT(i,DEC);
     COMPRINT("\t");
 
@@ -237,12 +241,24 @@ static void nunchuck_print_data()
     COMPRINT(accel_z_axis, DEC);
     COMPRINT("\t");
 
-    COMPRINT("but:");
+    COMPRINT("z,cbut:");
     COMPRINT(z_button, DEC);
     COMPRINT(",");
     COMPRINT(c_button, DEC);
 
     COMPRINT("\r\n");  // newline 
+    }
+    else 
+    {
+      COMPRINT("\t");
+      COMPRINT("joyY:");
+      COMPRINT(joy_y_axis, DEC);
+      COMPRINT("  \t");
+      COMPRINT("zbut:");
+      COMPRINT(z_button, DEC);
+    }
+    }
+    
     #else COMPRINT(i); 
     #endif
       

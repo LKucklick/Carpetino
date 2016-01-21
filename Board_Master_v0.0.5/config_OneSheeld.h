@@ -15,11 +15,10 @@ bool startFlag = false;
 
 
 
-
-
+#ifndef COMPRINT
 int serial_or_OneSheeld_initialize()                    // Initialize the Serial Monitor Communication
 {
-    #ifndef COMPRINT
+    
           
     #if Serial_or_OneSheeld_Terminal_Mode
     /* Start Serial communication. */
@@ -34,7 +33,7 @@ int serial_or_OneSheeld_initialize()                    // Initialize the Serial
     #define COMPRINTLN Terminal.println
     
     #endif  
-    #endif
+    
     
     if(Serial_or_OneSheeld_Terminal_Mode){
     COMPRINTLN("");
@@ -50,8 +49,10 @@ int serial_or_OneSheeld_initialize()                    // Initialize the Serial
     COMPRINTLN("OneSheeld.begin\n");}
     
 }
+#endif
 int OneSheeld_datalogger_initialize()                    // OneSheeld_datalogger
 {
+      
   /* Save any previous logged values. */
   Logger.stop();
   COMPRINT("OneSheeld begin and old data saved!");
@@ -68,8 +69,10 @@ int OneSheeld_log_data()                    // OneSheeld_datalogger
     {
     /* First insure to save previous logged values. */
     Logger.stop();
+    #if !Serial_or_OneSheeld_Terminal_Mode
     /* Set a delay. */
     OneSheeld.delay(50);
+    #endif
     /* Start logging in a new CSV file. */
     Logger.start("Test:DataLogger__Terminal__analogRead");
     /* Set startFlag. */
@@ -89,8 +92,10 @@ int OneSheeld_log_data()                    // OneSheeld_datalogger
     Logger.add("startFlag",startFlag);
     /* Log the row in the file. */
     Logger.log();  
+    #if !Serial_or_OneSheeld_Terminal_Mode
     /* Delay for 1 second. */
     OneSheeld.delay(50);
+    #endif
     /* Increment counter. */
     counter++;
     /* Stop logging after 20 readings and save the CSV file. */
