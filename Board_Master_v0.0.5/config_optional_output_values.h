@@ -1,6 +1,5 @@
 /*-----------------------------
  * Optinal Output Values (OOV)
- change change change a fool
  -----------------------------*/
    
 
@@ -22,7 +21,7 @@ int OOV_initialize()
     Serial.begin(115200);
     #define COMPRINT Serial.print
     #define COMPRINTLN Serial.println
-    
+    COMPRINTLN("Optinal Output Values (OOV)_init\n");
     
     #else
     /* Start OneSheeld communication. */
@@ -138,9 +137,11 @@ void print_chosen_output()
   if( bitRead(measurement_output_flag, 0)) // is this an ascii A?
     {
       COMPRINT("-------Mode A is ON----------");
+      RPM_print();
           }
  if( bitRead(measurement_output_flag, 1)) // is this an ascii A?
     {
       COMPRINTLN("-------Mode B is ON----------");
+      
     }
   }
